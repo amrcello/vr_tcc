@@ -31,17 +31,41 @@ public class GameManager : MonoBehaviour
     private AudioSource audioSource;
     private int currentResponseIndex = 0;
 
+    // Variáveis para os cronômetros
+    private float testStartTime;
+    private float currentTestTime;
+    private float totalResponseTime;
+    private float lastColorShowTime;
+
     void Start()
     {
         currentState = GameStates.Idle;
         Instance = this;
         audioSource = GetComponent<AudioSource>();
+        totalResponseTime = 0f;
+    }
+
+    void Update()
+    {
+        if (currentState != GameStates.Idle)
+        {
+            // Atualiza o cronômetro do teste
+            currentTestTime = Time.time - testStartTime;
+            scoreScreen.UpdateTimer(currentTestTime);
+        }
     }
 
     public void OnButtonPressed()
     {
         if (currentState == GameStates.Idle)
         {
+            // Inicia o cronômetro do teste
+            testStartTime = Time.time;
+            currentTestTime = 0f;
+            totalResponseTime = 0f;
+            scoreScreen.UpdateTimer(0f);
+            scoreScreen.UpdateResponseTime(0f);
+
             scoreScreen.UpdateScore(currentScore);
             currentState = GameStates.PlayingSequence;
             StartCoroutine(PlaySequenceInteractive());
@@ -80,6 +104,8 @@ public class GameManager : MonoBehaviour
     {
         if (currentResponseIndex >= trueSequence.Count)
         {
+            // Teste terminado, mostra resultados finais
+            scoreScreen.ShowFinalResults(currentScore, currentTestTime, totalResponseTime);
             currentState = GameStates.Idle;
             return;
         }
@@ -89,6 +115,9 @@ public class GameManager : MonoBehaviour
         tables[currentResponseIndex].SetColor(GetColorByItemCode(nextCode));
         audioSource.clip = GetToneByCode(nextCode);
         audioSource.Play();
+
+        // Registra o momento em que a cor foi mostrada
+        lastColorShowTime = Time.time;
     }
 
     void MoveItemsToSpawnPosition()
@@ -120,15 +149,19 @@ public class GameManager : MonoBehaviour
 
         if (selectedCode == expectedCode)
         {
+            // Calcula o tempo de resposta e acumula
+            float responseTime = Time.time - lastColorShowTime;
+            totalResponseTime += responseTime;
+            scoreScreen.UpdateResponseTime(totalResponseTime);
+
             currentScore++;
             scoreScreen.UpdateScore(currentScore);
 
-            // Mantém a cor acesa
             audioSource.clip = successSound;
             audioSource.Play();
 
             currentResponseIndex++;
-            Invoke(nameof(ShowNextStep), 1f); // Espera 1 segundo e mostra próxima cor
+            Invoke(nameof(ShowNextStep), 1f);
         }
         else
         {
