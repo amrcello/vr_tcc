@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     public List<Material> colors;
     public List<AudioClip> tones;
     public AudioClip successSound;
+    public AudioClip errorSound;
 
     public List<Transform> spawnPoints;
 
@@ -145,11 +146,14 @@ public class GameManager : MonoBehaviour
         if (currentState != GameStates.ArrangeItem || currentResponseIndex >= trueSequence.Count)
             return;
 
+        audioSource.Stop();
+
         ItemCode expectedCode = trueSequence[currentResponseIndex];
 
         if (selectedCode == expectedCode)
         {
             // Calcula o tempo de resposta e acumula
+            audioSource.clip = successSound;
             float responseTime = Time.time - lastColorShowTime;
             totalResponseTime += responseTime;
             scoreScreen.UpdateResponseTime(totalResponseTime);
@@ -165,6 +169,9 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            audioSource.clip = errorSound;
+            audioSource.Play();
+
             currentScore = Mathf.Max(0, currentScore - 1);
             scoreScreen.UpdateScore(currentScore);
         }

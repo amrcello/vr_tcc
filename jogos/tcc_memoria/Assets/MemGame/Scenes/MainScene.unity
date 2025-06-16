@@ -5546,6 +5546,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 7f2ab4fc786d556439441c5d84b275e7, type: 3}
   - {fileID: 8300000, guid: 95c805b767332124fb8d3fd74731b207, type: 3}
   successSound: {fileID: 8300000, guid: cca3052576563d04aac75137625a2c18, type: 3}
+  errorSound: {fileID: 8300000, guid: 9a9c9ada774926443a56d055f85b1d32, type: 3}
   spawnPoints:
   - {fileID: 104753473}
   - {fileID: 2038012518}

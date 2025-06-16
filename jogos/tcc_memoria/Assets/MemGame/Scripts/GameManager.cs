@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public List<Material> colors;
     public List<AudioClip> tones;
     public AudioClip successSound;
+    public AudioClip errorSound;
 
     public List<Transform> spawnPoints;
     public ScoreScreen scoreScreen;
@@ -167,6 +168,12 @@ public class GameManager : MonoBehaviour
 
     public void OnColorButtonPressed(ItemCode selectedCode)
     {
+        if (currentState != GameStates.AwaitingPlayerInput ||
+        inputIndex >= trueSequence.Count ||
+        inputIndex < 0)
+        {
+            return;
+        }
         if (currentState != GameStates.AwaitingPlayerInput || inputIndex >= currentStep)
             return;
 
@@ -210,6 +217,9 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            audioSource.clip = errorSound;
+            audioSource.Play();
+
             errorCount++;
             currentScore = Mathf.Max(0, currentScore - 1);
             scoreScreen.UpdateScore(currentScore);
