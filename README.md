@@ -56,8 +56,3 @@ Este projeto é parte de um TCC acadêmico. **Não utilize para fins comerciais 
 📧 **Contato:** marcelloalmeida022@gmail.com  
 
 ---
-
-### **🎮 Divirta-se jogando!**  
-Se tiver dúvidas sobre o projeto, sinta-se à vontade para entrar em contato. 😊  
-
----
